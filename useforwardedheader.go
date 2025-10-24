@@ -1,6 +1,7 @@
 package use_forwaded_header
 
 import (
+	"fmt"
 	"context"
 	"net"
 	"net/http"
@@ -53,9 +54,16 @@ func (plugin *Plugin) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	req.Header.Set("X-Plugin-Debug", "UseForwardedHeader-Running")
 	
-	remoteIP, _, _ := net.SplitHostPort(req.RemoteAddr)
+	remoteIP, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		remoteIP = req.RemoteAddr  // Sem porta
+	}
+
+	req.Header.Set("X-Debug-RemoteAddr", req.RemoteAddr)
+	req.Header.Set("X-Debug-RemoteIP", remoteIP)
+
 	ip := net.ParseIP(remoteIP)
-	
+
 	trusted := false
 	if ip != nil {
 		for _, ipnet := range plugin.trustedIPs {
@@ -65,6 +73,9 @@ func (plugin *Plugin) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
+
+	req.Header.Set("X-Debug-Trusted", fmt.Sprintf("%v", trusted))
+	req.Header.Set("X-Debug-IP-Parsed", fmt.Sprintf("%v", ip != nil))
 	
 	if !trusted {
 		plugin.next.ServeHTTP(rw, req)
