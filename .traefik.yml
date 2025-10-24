@@ -1,12 +1,8 @@
 displayName: Use Forwaded Header
 type: middleware
 iconPath: .assets/icon.png
-
 import: github.com/vagkaefer/use-forwaded-header
-
 summary: 'Use Forwaded Header description here'
-
 testData:
   Headers:
-    X-Demo: test
-    X-URL: '{{URL}}'
+    forHeader: X-Real-Ip

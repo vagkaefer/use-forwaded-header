@@ -1,4 +1,4 @@
-package UseForwardedHeader
+package use_forwaded_header
 
 import (
 	"context"
@@ -50,6 +50,9 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 }
 
 func (plugin *Plugin) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+
+	req.Header.Set("X-Plugin-Debug", "UseForwardedHeader-Running")
+	
 	remoteIP, _, _ := net.SplitHostPort(req.RemoteAddr)
 	ip := net.ParseIP(remoteIP)
 	
