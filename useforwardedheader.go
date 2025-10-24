@@ -52,36 +52,6 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 
 func (plugin *Plugin) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
-	req.Header.Set("X-Plugin-Debug", "UseForwardedHeader-Running")
-	
-	remoteIP, _, err := net.SplitHostPort(req.RemoteAddr)
-	if err != nil {
-		remoteIP = req.RemoteAddr  // Sem porta
-	}
-
-	req.Header.Set("X-Debug-RemoteAddr", req.RemoteAddr)
-	req.Header.Set("X-Debug-RemoteIP", remoteIP)
-
-	ip := net.ParseIP(remoteIP)
-
-	trusted := false
-	if ip != nil {
-		for _, ipnet := range plugin.trustedIPs {
-			if ipnet.Contains(ip) {
-				trusted = true
-				break
-			}
-		}
-	}
-
-	req.Header.Set("X-Debug-Trusted", fmt.Sprintf("%v", trusted))
-	req.Header.Set("X-Debug-IP-Parsed", fmt.Sprintf("%v", ip != nil))
-	
-	if !trusted {
-		plugin.next.ServeHTTP(rw, req)
-		return
-	}
-
 	Forwarded := []string{}
 	For := strings.TrimSpace(req.Header.Get(plugin.forHeader))
 	Host := strings.TrimSpace(req.Header.Get("X-Forwarded-Host"))
