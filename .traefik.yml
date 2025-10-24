@@ -1,10 +1,10 @@
-displayName: Demo Plugin
+displayName: Use Forwaded Header
 type: middleware
 iconPath: .assets/icon.png
 
-import: github.com/traefik/plugindemo
+import: github.com/vagkaefer/use-forwaded-header
 
-summary: '[Demo] Add Request Header'
+summary: 'Use Forwaded Header description here'
 
 testData:
   Headers:

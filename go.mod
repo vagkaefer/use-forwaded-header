@@ -1,3 +1,3 @@
-module github.com/traefik/plugindemo
+module github.com/vagkaefer/use-forwaded-header
 
 go 1.19
